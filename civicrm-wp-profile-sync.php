@@ -49,6 +49,15 @@ if ( ! defined( 'CIVICRM_WP_PROFILE_SYNC_PATH' ) ) {
  */
 class CiviCRM_WP_Profile_Sync {
 
+	/**
+	 * WooCommerce sync object.
+	 *
+	 * @since 0.2.6
+	 * @access public
+	 * @var object $woo The WooCommerce sync object
+	 */
+	public $woo;
+
 
 
 	/**
@@ -60,6 +69,9 @@ class CiviCRM_WP_Profile_Sync {
 
 		// use translation
 		add_action( 'plugins_loaded', array( $this, 'translation' ) );
+
+		// optionally include WooCommerce code
+		add_action( 'plugins_loaded', array( $this, 'include_woo' ) );
 
 		// post process CiviCRM contact when WP user is updated, done late to let other plugins go first
 		$this->_add_hooks_wp();
@@ -124,6 +136,26 @@ class CiviCRM_WP_Profile_Sync {
 				dirname( plugin_basename( CIVICRM_WP_PROFILE_SYNC_FILE ) ) . '/languages/'
 
 			);
+
+		}
+
+	}
+
+
+
+	/**
+	 * Load the WooCommerce sync code if the plugin is present and active.
+	 *
+	 * @since 0.2.6
+	 */
+	public function include_woo() {
+
+		// if WooCommerce init function exists
+		if ( function_exists( 'WC' ) ) {
+
+			// load file and init
+			require_once( CIVICRM_WP_PROFILE_SYNC_PATH . 'civicrm-wp-profile-sync-woo.php' );
+			$this->woo = new CiviCRM_WP_Profile_Sync_Woo( $this );
 
 		}
 
@@ -944,4 +976,4 @@ function civicrm_wp_profile_sync_init() {
 add_action( 'civicrm_instance_loaded', 'civicrm_wp_profile_sync_init' );
 
 
-require_once CIVICRM_WP_PROFILE_SYNC_PATH . 'woo-sync.php';
+
