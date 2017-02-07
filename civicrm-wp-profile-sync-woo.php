@@ -5,14 +5,14 @@
  *
  * A class that encapsulates WooCommerce sync functionality.
  *
- * @since 0.2.6
+ * @since 0.3
  */
 class CiviCRM_WP_Profile_Sync_Woo {
 
 	/**
 	 * Current buffered WordPress user ID.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 * @access protected
 	 * @var int $_wp_user_id The WordPress user ID.
 	 */
@@ -21,7 +21,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Current buffered CiviCRM contact ID.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 * @access protected
 	 * @var int $_civi_contact_id The CiviCRM contact ID.
 	 */
@@ -30,7 +30,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Current buffered CiviCRM contact primary address ID and Type.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 * @access protected
 	 * @var array $_civi_primary_address_info The CiviCRM contact primary address ID and Type.
 	 */
@@ -39,7 +39,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Current buffered CiviCRM contact billing address ID and Type.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 * @access protected
 	 * @var array $_civi_billing_address_info The CiviCRM contact billing address ID and Type.
 	 */
@@ -48,7 +48,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Current buffered CiviCRM contact primary phone ID.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 * @access protected
 	 * @var array $_civi_primary_phone_id The CiviCRM contact primary phone ID.
 	 */
@@ -57,7 +57,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Field names mapping using CiviCRM API.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 * @access protected
 	 * @var array $_address_api_mapping_wc_to_civi The field names mapping.
 	 */
@@ -75,7 +75,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Constructor.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 *
 	 * @param obj $plugin The reference to the main plugin class.
 	 */
@@ -97,7 +97,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Synchronise changes of address fields of user metadata in WordPress & WooCommerce to CiviCRM
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 *
 	 * @param int $meta_id ID of updated metadata entry.
 	 * @param int $object_id Object ID.
@@ -235,7 +235,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Synchronise changes of billing phone of woo user metadata in WordPress & WooCommerce to CiviCRM
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 *
 	 * @param string $_meta_key Meta key.
 	 * @param mixed $_meta_value Meta value.
@@ -285,7 +285,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Synchronise changes of billing and shipping address of woo user metadata in WordPress & WooCommerce to CiviCRM
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 *
 	 * @param string $_meta_key Meta key.
 	 * @param mixed $_meta_value Meta value.
@@ -415,7 +415,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Synchronise primary phone changes (edit, create, delete) in CiviCRM to WordPress & WooCommerce, hooked into pre process
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 *
 	 * @param string $_meta_key Meta key.
 	 * @param mixed $_meta_value Meta value.
@@ -499,7 +499,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	 *
 	 * Sync changes (edit, create, delete) in CiviCRM to WordPress & WooCommerce, hooked into pre process
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 *
 	 * @param string $op The type of database operation
 	 * @param string $objectName The type of object
@@ -591,7 +591,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Update corresponding types of addresses in WordPress & WooCommerce.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 *
 	 * @param integer $user_id The user id in WP
 	 * @param object $objectRef The object of user in CiviCRM
@@ -667,7 +667,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Add WordPress WooCommerce sync hooks.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 */
 	private function _add_hooks_wp_wc() {
 
@@ -682,7 +682,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Remove WordPress WooCommerce sync hooks.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 */
 	private function _remove_hooks_wp_wc() {
 
@@ -696,7 +696,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Add CiviCRM WooCommerce sync hooks.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 */
 	private function _add_hooks_civi_wc() {
 
@@ -713,7 +713,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Remove CiviCRM WooCommerce sync hooks.
 	 *
-	 * @since 0.2.6
+	 * @since 0.3
 	 */
 	private function _remove_hooks_civi_wc() {
 
