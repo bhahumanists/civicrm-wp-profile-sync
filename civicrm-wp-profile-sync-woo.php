@@ -151,7 +151,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 					$user->user_email, // unique identifier
 					'WordPress', // CMS
 					null, // status (unused)
-					'Individual', // contact type
+					'Individual' // contact type
 				);
 
 				$this->_wp_user_id = $user->ID;
