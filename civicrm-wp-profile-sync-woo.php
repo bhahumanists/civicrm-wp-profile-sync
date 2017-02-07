@@ -154,6 +154,11 @@ class CiviCRM_WP_Profile_Sync_Woo {
 					'Individual' // contact type
 				);
 
+				// bail if we don't get one for some reason
+				if ( ! isset( $civi_contact->contact_id ) ) {
+					return;
+				}
+
 				$this->_wp_user_id = $user->ID;
 				$this->_civi_contact_id = $civi_contact->contact_id;
 
