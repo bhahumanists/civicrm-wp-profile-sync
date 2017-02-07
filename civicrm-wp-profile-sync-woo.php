@@ -113,7 +113,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 			'$meta_key' => $meta_key,
 			'$_meta_value' => $_meta_value,
 		);
-		$this->_log_exception( $debug_array );
+		$this->plugin->_debug( $debug_array );
 		*/
 
 		$_lower_case_meta_key = strtolower( $meta_key );
@@ -211,7 +211,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 				}
 
 				/*
-				$this->_log_exception( array(
+				$this->plugin->_debug( array(
 					'_civi_primary_address_info' => $this->_civi_primary_address_info,
 					'_civi_billing_address_info' => $this->_civi_billing_address_info,
 				) );
@@ -270,7 +270,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 		try {
 			$result = civicrm_api3( 'Phone', 'create', $_query_array );
 		} catch ( Exception $e ) {
-			$this->_log_exception( $e->getMessage() );
+			$this->plugin->_debug( $e->getMessage() );
 		}
 
 		if ( $_need_to_update_phone_id ) {
@@ -297,7 +297,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 			'$_meta_key' => $_meta_key,
 			'$_meta_value' =>  $_meta_value,
 		);
-		$this->_log_exception( $debug_array );
+		$this->plugin->_debug( $debug_array );
 		*/
 
 		$tmp = explode( '_', $_meta_key );
@@ -375,7 +375,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 		try {
 			$result = civicrm_api3( 'Address', 'create', $_query_array );
 		} catch ( Exception $e ) {
-			$this->_log_exception( $e->getMessage() );
+			$this->plugin->_debug( $e->getMessage() );
 		}
 
 		// update the buffered address info if needed.
@@ -722,37 +722,6 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 		// hook into post process of Phone update in CiviCRM for synchronisation to WP/WC.
 		remove_action( 'civicrm_pre', array( $this, 'civi_primary_phone_update' ), 10 );
-
-	}
-
-
-
-	/**
-	 * Logging exceptions and errors.
-	 *
-	 * @since 0.2.6
-	 *
-	 * @param array $msg
-	 */
-	private function _log_exception( $msg ) {
-
-		if ( CIVICRM_WP_PROFILE_SYNC_DEBUG ) {
-
-			// handle Exceptions
-			if ( ! is_array( $msg ) ) {
-				$msg = array( 'exception message' => $msg );
-			}
-
-			// always add method
-			$msg['method'] = __METHOD__;
-
-			// uncomment this to add a backtrace
-			//$msg['backtrace'] = wp_debug_backtrace_summary();
-
-			// log the message
-			error_log( print_r( $msg, true ) );
-
-		}
 
 	}
 

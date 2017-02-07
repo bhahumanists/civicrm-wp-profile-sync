@@ -933,13 +933,17 @@ class CiviCRM_WP_Profile_Sync {
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $msg
-	 * @return string
+	 * @param array|str $msg Either an array of data or an error message
 	 */
-	private function _debug( $msg ) {
+	public function _debug( $msg ) {
 
 		// do we want output?
 		if ( CIVICRM_WP_PROFILE_SYNC_DEBUG ) {
+
+			// handle Exceptions
+			if ( ! is_array( $msg ) ) {
+				$msg = array( 'exception message' => $msg );
+			}
 
 			// uncomment this to add a backtrace
 			//$msg['backtrace'] = wp_debug_backtrace_summary();
