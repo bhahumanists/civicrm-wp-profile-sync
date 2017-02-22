@@ -106,16 +106,6 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	 */
 	public function update_civi_address_fields( $meta_id, $object_id, $meta_key, $_meta_value ) {
 
-		/*
-		$debug_array = array(
-			'$meta_id' => $meta_id,
-			'$object_id' => $object_id,
-			'$meta_key' => $meta_key,
-			'$_meta_value' => $_meta_value,
-		);
-		$this->plugin->_debug( $debug_array );
-		*/
-
 		$_lower_case_meta_key = strtolower( $meta_key );
 
 		if (
@@ -127,6 +117,16 @@ class CiviCRM_WP_Profile_Sync_Woo {
 		) {
 			return;
 		}
+
+		/*
+		$this->plugin->_debug( array(
+			'method' => __METHOD__,
+			'meta_id' => $meta_id,
+			'object_id' => $object_id,
+			'meta_key' => $meta_key,
+			'meta_value' => $_meta_value,
+		) );
+		*/
 
 		$_get_new_ids = ( isset( $this->_wp_user_id ) AND $this->_wp_user_id == $object_id ) ? false : true;
 
@@ -293,11 +293,11 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	private function _sync_to_civicrm_addresses( $_meta_key, $_meta_value ) {
 
 		/*
-		$debug_array = array(
-			'$_meta_key' => $_meta_key,
-			'$_meta_value' =>  $_meta_value,
-		);
-		$this->plugin->_debug( $debug_array );
+		$this->plugin->_debug( array(
+			'method' => __METHOD__,
+			'meta_key' => $_meta_key,
+			'meta_value' =>  $_meta_value,
+		) );
 		*/
 
 		$tmp = explode( '_', $_meta_key );
@@ -425,6 +425,16 @@ class CiviCRM_WP_Profile_Sync_Woo {
 		// target our object type
 		if ( $objectName != 'Phone' ) return;
 
+		/*
+		$this->plugin->_debug( array(
+			'method' => __METHOD__,
+			'op' => $op,
+			'objectName' => $objectName,
+			'objectId' => $objectId,
+			'objectRef' => $objectRef,
+		) );
+		*/
+
 		$_is_deletion = false;
 
 		if ( $op == 'delete' ) {
@@ -456,16 +466,6 @@ class CiviCRM_WP_Profile_Sync_Woo {
 			}
 
 		}
-
-		/*
-		$debug_array = array(
-			'op' => $op,
-			'objectName' => $objectName,
-			'objectId' => $objectId,
-			'objectRef' => $objectRef,
-		);
-		CRM_Core_Session::setStatus( print_r( $debug_array, true ), '', 'error' );
-		*/
 
 		// init CiviCRM to get WP user ID
 		if ( ! civi_wp()->initialize() ) return;
@@ -511,6 +511,16 @@ class CiviCRM_WP_Profile_Sync_Woo {
 		// target our object type
 		if ( $objectName != 'Address' ) return;
 
+		/*
+		$this->plugin->_debug( array(
+			'method' => __METHOD__,
+			'op' => $op,
+			'objectName' => $objectName,
+			'objectId' => $objectId,
+			'objectRef' => $objectRef,
+		) );
+		*/
+
 		$_is_deletion = false;
 
 		if ( $op == 'delete' ) {
@@ -547,16 +557,6 @@ class CiviCRM_WP_Profile_Sync_Woo {
 			if ( $objectRef->is_primary == '0' AND $objectRef->is_billing == '0' ) return;
 
 		}
-
-		/*
-		$_debug_array = array(
-			'op' => $op,
-			'objectName' => $objectName,
-			'objectId' => $objectId,
-			'objectRef' => $objectRef,
-		);
-		CRM_Core_Session::setStatus( print_r( $_debug_array, true ), '', 'error' );
-		*/
 
 		// init CiviCRM to get WP user ID
 		if ( ! civi_wp()->initialize() ) return;
@@ -629,9 +629,6 @@ class CiviCRM_WP_Profile_Sync_Woo {
 				);
 
 				$_state_abbreviation = CRM_Core_DAO::singleValueQuery( $query, $params );
-
-				// debug
-				//CRM_Core_Session::setStatus( print_r( array( 'abb' => $_state_abbreviation ), true ), '', 'error' );
 
 				update_user_meta( $user_id, $_address_type . '_' . $key, $_state_abbreviation );
 
