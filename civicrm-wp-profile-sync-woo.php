@@ -84,10 +84,11 @@ class CiviCRM_WP_Profile_Sync_Woo {
 		// store reference
 		$this->plugin = $plugin;
 
-		// post process CiviCRM contact when WP user is updated, done late to let other plugins go first
+		// post process a CiviCRM contact when the WordPress user is updated,
+		// done late to let other plugins go first
 		$this->_add_hooks_wp_wc();
 
-		// sync a WP user when a CiviCRM contact is updated
+		// sync a WordPress user when a CiviCRM contact is updated
 		$this->_add_hooks_civi_wc();
 
 	}
@@ -95,7 +96,8 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 
 	/**
-	 * Synchronise changes of address fields of user metadata in WordPress & WooCommerce to CiviCRM
+	 * Synchronise changes of address fields of user metadata in WordPress &
+	 * WooCommerce to CiviCRM.
 	 *
 	 * @since 0.3
 	 *
@@ -179,7 +181,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 					);
 				}
 
-				//get billing address id and type and store them within the object.
+				// get billing address id and type and store them within the object.
 				$result = civicrm_api3( 'Address', 'get', array(
 					'sequential' => 1,
 					'return' => array( 'id', 'location_type_id' ),
@@ -223,8 +225,8 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 		$this->_remove_hooks_civi_wc();
 
+		// perform sync
 		$this->_sync_to_civicrm_phone( $meta_key, $_meta_value );
-
 		$this->_sync_to_civicrm_addresses( $meta_key, $_meta_value );
 
 		$this->_add_hooks_civi_wc();
@@ -233,7 +235,8 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 
 	/**
-	 * Synchronise changes of billing phone of woo user metadata in WordPress & WooCommerce to CiviCRM
+	 * Synchronise changes of billing phone of woo user metadata in WordPress &
+	 * WooCommerce to CiviCRM.
 	 *
 	 * @since 0.3
 	 *
@@ -283,7 +286,8 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 
 	/**
-	 * Synchronise changes of billing and shipping address of woo user metadata in WordPress & WooCommerce to CiviCRM
+	 * Synchronise changes of billing and shipping address of woo user metadata
+	 * in WordPress & WooCommerce to CiviCRM.
 	 *
 	 * @since 0.3
 	 *
@@ -308,13 +312,15 @@ class CiviCRM_WP_Profile_Sync_Woo {
 		if ( array_key_exists( $_processed_meta_key, self::$_address_api_mapping_wc_to_civi ) ) {
 
 			/*
-			 * The country field is working fine, as CiviCRM API can recognise short names of countries
-			 * but WC is letting users to enter the state/province names by themselves AT WP PROFILE PAGE
-			 * (on the 'my account' page)
-			 * So it is likely that the state field could not be correctly updated.
+			 * The country field is working fine, as CiviCRM API can recognise
+			 * short names of countries but WooCommerce is letting users enter
+			 * the state/province names by themselves on their WordPress Profile
+			 * Page (in the WordPress back end) so it is likely that the state
+			 * field will not be correctly updated.
 			 *
-			 * We need to store the states full name mapping for corresponding country in the object,
-			 * otherwise the CiviCRM API cannot recognise abbreviation of state names provided by WooCommerce.
+			 * We need to store the state's full name mapping for a corresponding
+			 * country in the object, otherwise the CiviCRM API cannot recognise
+			 * the abbreviation of state names provided by WooCommerce.
 			 */
 
 			if ( strpos( strtolower( $_processed_meta_key ), 'state' ) !== false ) {
@@ -337,8 +343,11 @@ class CiviCRM_WP_Profile_Sync_Woo {
 			return;
 		}
 
-		// NOTE if the the address info is empty, we need to update the attribute after creating a new address in CiviCRM.
-		// otherwise each call will create a new address.
+		/*
+		 * NOTE if the the address info is empty, we need to update the attribute
+		 * after creating a new address in CiviCRM otherwise each call will create
+		 * a new address.
+		 */
 
 		$_need_to_update_object_address_info = false;
 
@@ -383,9 +392,11 @@ class CiviCRM_WP_Profile_Sync_Woo {
 			$result = $result['values'][0];
 
 			/*
-			 * NOTE we need to check `is_billing` first, as first it follows the order of woo's user metadata.
-			 * Secondly if only billing address information is filled out and the user doesn't have any address in CiviCRM,
-			 * CiviCRM will mark the first address created as `primary` too. This will cause incorrect data input of the fisrt
+			 * NOTE we need to check `is_billing` first, as first it follows the
+			 * order of Woo's user metadata. Secondly if only billing address
+			 * information is filled out and the user doesn't have any address
+			 * in CiviCRM, CiviCRM will mark the first address created as
+			 * `primary` too. This will cause incorrect data input of the first
 			 * address field, if we check `is_primary` first.
 			 */
 
@@ -413,7 +424,8 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 
 	/**
-	 * Synchronise primary phone changes (edit, create, delete) in CiviCRM to WordPress & WooCommerce, hooked into pre process
+	 * Synchronise primary phone changes (edit, create, delete) in CiviCRM to
+	 * WordPress & WooCommerce, hooked into pre process.
 	 *
 	 * @since 0.3
 	 *
@@ -467,7 +479,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 		}
 
-		// init CiviCRM to get WP user ID
+		// init CiviCRM to get WordPress user ID
 		if ( ! civi_wp()->initialize() ) return;
 
 		// make sure Civi file is included
@@ -497,7 +509,8 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	/**
 	 * Synchronise primary and billing addresses.
 	 *
-	 * Sync changes (edit, create, delete) in CiviCRM to WordPress & WooCommerce, hooked into pre process
+	 * Sync changes (edit, create, delete) in CiviCRM to WordPress & WooCommerce,
+	 * hooked into pre process.
 	 *
 	 * @since 0.3
 	 *
@@ -558,7 +571,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 		}
 
-		// init CiviCRM to get WP user ID
+		// init CiviCRM to get WordPress user ID
 		if ( ! civi_wp()->initialize() ) return;
 
 		// make sure Civi file is included
@@ -593,31 +606,33 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	 *
 	 * @since 0.3
 	 *
-	 * @param integer $user_id The user id in WP
+	 * @param integer $user_id The user id in WordPress
 	 * @param object $objectRef The object of user in CiviCRM
 	 * @param string $_address_type The location type of the address
 	 * @param boolean $_is_deletion Whether this operation is deletion or not.
 	 */
 	private function _update_address_info_civicrm( $user_id, $objectRef, $_address_type, $_is_deletion ) {
 
-		//look up all fields that we care about in CiviCRM object.
+		// look up all fields that we care about in CiviCRM object.
 		foreach ( self::$_address_api_mapping_wc_to_civi as $key => $value ) {
 
 			if ( $key == 'state' AND isset( $objectRef[$value] ) AND $objectRef[$value] != 'null' AND ! $_is_deletion ) {
 
 				/*
-				 * CiviCRM and WC both use standard state and country abbreviations.
-				 * But WC store and grab abbrivation of country and state in user mata data.
-				 * While CiviCRM API accept full name and id of different states and countries.
+				 * CiviCRM and WooCommerce both appear to use standard state and
+				 * country abbreviations - though the abbreviations are not the
+				 * same. While WooCommerce stores an abbreviation of country and
+				 * state in user metadata, the CiviCRM API accepts the full name
+				 * and id of different states and countries.
 				 */
 
 				$_civi_state_id = $objectRef[$value];
 
-				//get the country id.
+				// get the country id.
 				if ( isset( $objectRef['country_id'] ) AND $objectRef['country_id'] != 'null' ) {
 					$_civi_country_id = $objectRef['country_id'];
 				} else {
-					//if no country id is provided, the state can not be set.
+					// if no country id is provided, the state can not be set.
 					continue;
 				}
 
@@ -638,7 +653,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 
 				$_civi_country_id = $objectRef[$value];
 
-				//get the country abbrivation
+				// get the country abbreviation
 				$result = civicrm_api3( 'Country', 'get', array(
 					'sequential' => 1,
 					'return' => array( 'iso_code' ),
@@ -668,7 +683,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	 */
 	private function _add_hooks_wp_wc() {
 
-		//  hook into meta data update process
+		// hook into meta data update process
 		add_action( 'updated_user_meta', array( $this, 'update_civi_address_fields' ), 100, 4 );
 		add_action( 'added_user_meta', array( $this, 'update_civi_address_fields' ), 100, 4 );
 
@@ -697,10 +712,10 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	 */
 	private function _add_hooks_civi_wc() {
 
-		// hook into post process of address update in CiviCRM for synchronisation to WP/WC.
+		// hook into post process of address update in CiviCRM for synchronisation to WordPress/WooCommerce.
 		add_action( 'civicrm_pre', array( $this, 'civi_primary_n_billing_addresses_update' ), 10, 4 );
 
-		// hook into post process of Phone update in CiviCRM for synchronisation to WP/WC.
+		// hook into post process of Phone update in CiviCRM for synchronisation to WordPress/WooCommerce.
 		add_action( 'civicrm_pre', array( $this, 'civi_primary_phone_update' ), 10, 4 );
 
 	}
@@ -714,10 +729,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	 */
 	private function _remove_hooks_civi_wc() {
 
-		// hook into post process of address update in CiviCRM for synchronisation to WP/WC.
 		remove_action( 'civicrm_pre', array( $this, 'civi_primary_n_billing_addresses_update' ), 10 );
-
-		// hook into post process of Phone update in CiviCRM for synchronisation to WP/WC.
 		remove_action( 'civicrm_pre', array( $this, 'civi_primary_phone_update' ), 10 );
 
 	}
