@@ -567,7 +567,7 @@ class CiviCRM_WP_Profile_Sync_Woo {
 			if ( ! isset( $objectRef['contact_id'] ) ) return;
 
 			// we only care about primary address and billing address
-			if ( $objectRef->is_primary == '0' AND $objectRef->is_billing == '0' ) return;
+			if ( $objectRef['is_primary'] == '0' AND $objectRef['is_billing'] == '0' ) return;
 
 		}
 
