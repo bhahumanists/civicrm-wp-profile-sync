@@ -613,60 +613,118 @@ class CiviCRM_WP_Profile_Sync_Woo {
 	 */
 	private function _update_address_info_civicrm( $user_id, $objectRef, $_address_type, $_is_deletion ) {
 
+		/*
+		$this->plugin->_debug( array(
+			'method' => __METHOD__,
+			'user_id' => $user_id,
+			'objectRef' => $objectRef,
+			'address_type' => $_address_type,
+			'is_deletion' => $_is_deletion,
+			'mapping' => self::$_address_api_mapping_wc_to_civi,
+		) );
+		*/
+
 		// look up all fields that we care about in CiviCRM object.
 		foreach ( self::$_address_api_mapping_wc_to_civi as $key => $value ) {
 
-			if ( $key == 'state' AND isset( $objectRef[$value] ) AND $objectRef[$value] != 'null' AND ! $_is_deletion ) {
+			// always catch state
+			if ( $key == 'state' ) {
 
-				/*
-				 * CiviCRM and WooCommerce both appear to use standard state and
-				 * country abbreviations - though the abbreviations are not the
-				 * same. While WooCommerce stores an abbreviation of country and
-				 * state in user metadata, the CiviCRM API accepts the full name
-				 * and id of different states and countries.
-				 */
+				// test for a valid value
+				if ( isset( $objectRef[$value] ) AND $objectRef[$value] != 'null' AND ! $_is_deletion ) {
 
-				$_civi_state_id = $objectRef[$value];
+					/*
+					 * CiviCRM and WooCommerce both appear to use standard state and
+					 * country abbreviations - though the abbreviations are not the
+					 * same. While WooCommerce stores an abbreviation of country and
+					 * state in user metadata, the CiviCRM API accepts the full name
+					 * and id of different states and countries.
+					 */
 
-				// get the country id.
-				if ( isset( $objectRef['country_id'] ) AND $objectRef['country_id'] != 'null' ) {
-					$_civi_country_id = $objectRef['country_id'];
+					$_civi_state_id = $objectRef[$value];
+
+					// get the country id.
+					if ( isset( $objectRef['country_id'] ) AND $objectRef['country_id'] != 'null' ) {
+						$_civi_country_id = $objectRef['country_id'];
+					} else {
+						// if no country id is provided, the state cannot be retrieved.
+						continue;
+					}
+
+					// CiviCRM API v3 does not support state province at present so query directly
+					$query = 'SELECT abbreviation FROM civicrm_state_province WHERE country_id = %1 AND id = %2';
+					$params = array(
+						1 => array( $_civi_country_id, 'Integer' ),
+						2 => array( $_civi_state_id, 'Integer' ),
+					);
+
+					$_state_abbreviation = CRM_Core_DAO::singleValueQuery( $query, $params );
+
+					/*
+					$this->plugin->_debug( array(
+						'method' => __METHOD__,
+						'user_id' => $user_id,
+						'address_type' => $_address_type,
+						'state_abbreviation' => $_state_abbreviation,
+					) );
+					*/
+
 				} else {
-					// if no country id is provided, the state can not be set.
-					continue;
+
+					// since empty can be the STRING 'null' *sigh* force empty string
+					$_state_abbreviation = '';
+
 				}
-
-				// CiviCRM API v3 is not supporting state province at present.
-				$query = 'SELECT abbreviation FROM civicrm_state_province WHERE country_id = %1 AND id = %2';
-				$params = array(
-					1 => array( $_civi_country_id, 'Integer' ),
-					2 => array( $_civi_state_id, 'Integer' ),
-				);
-
-				$_state_abbreviation = CRM_Core_DAO::singleValueQuery( $query, $params );
 
 				update_user_meta( $user_id, $_address_type . '_' . $key, $_state_abbreviation );
 
-				continue;
-
-			} elseif ( $key == 'country' AND isset( $objectRef[$value] ) AND $objectRef[$value] != 'null' AND ! $_is_deletion ) {
-
-				$_civi_country_id = $objectRef[$value];
-
-				// get the country abbreviation
-				$result = civicrm_api3( 'Country', 'get', array(
-					'sequential' => 1,
-					'return' => array( 'iso_code' ),
-					'id' => $_civi_country_id,
-				) );
-
-				update_user_meta( $user_id, $_address_type . '_' . $key, $result['values'][0]['iso_code'] );
-
+				// always skip to next item
 				continue;
 
 			}
 
+			// always catch country
+			if ( $key == 'country' ) {
+
+				// test for a valid value
+				if ( isset( $objectRef[$value] ) AND $objectRef[$value] != 'null' AND ! $_is_deletion ) {
+
+					// get the country abbreviation
+					$result = civicrm_api3( 'Country', 'get', array(
+						'sequential' => 1,
+						'return' => array( 'iso_code' ),
+						'id' => $objectRef[$value],
+					) );
+
+					$iso_code = $result['values'][0]['iso_code'];
+
+				} else {
+
+					// since empty can be the STRING 'null' *sigh* force empty string
+					$iso_code = '';
+
+				}
+
+				update_user_meta( $user_id, $_address_type . '_' . $key, $iso_code );
+
+				// always skip to next item
+				continue;
+
+			}
+
+			// for all other items, just grab value
 			$_value_to_write = ( $_is_deletion ) ? '' : $objectRef[$value];
+
+			/*
+			$this->plugin->_debug( array(
+				'method' => __METHOD__,
+				'user_id' => $user_id,
+				'address_type' => $_address_type,
+				'key' => $key,
+				'value' => $value,
+				'value_to_write' => $_value_to_write,
+			) );
+			*/
 
 			update_user_meta( $user_id, $_address_type . '_' . $key, $_value_to_write );
 
